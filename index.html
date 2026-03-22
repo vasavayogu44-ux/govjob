@@ -824,7 +824,7 @@ async function signupStep3() {
   };
 
   try {
-    if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+    if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
       const {data,error} = await supabase.auth.signUp({
         email: profile.email,
         password: profile.pass,
@@ -875,7 +875,7 @@ async function loginUser() {
   btn.disabled = true;
 
   try {
-    if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+    if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
       const {data,error} = await supabase.auth.signInWithPassword({email,password:pass});
       if (error) throw error;
       currentUser = data.user;
@@ -906,7 +906,7 @@ function loginAdmin() {
 }
 
 async function logout() {
-  if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') await supabase.auth.signOut();
+  if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') await supabase.auth.signOut();
   currentUser = null; userProfile = null; jobs = []; analysisData = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
@@ -1084,7 +1084,7 @@ For job_matches: provide 10-15 real, relevant jobs from across India matching th
     localStorage.setItem('careerai_analysis_'+currentUser?.id, JSON.stringify(analysisData));
 
     // Save to Supabase
-    if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+    if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
       await supabase.from('profiles').update({
         cv_text: cvText.slice(0,10000),
         cv_score: analysisData.score,
@@ -1341,7 +1341,7 @@ function saveJob() {
 }
 
 async function saveJobs() {
-  if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+  if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
     await supabase.from('profiles').update({applications:JSON.stringify(jobs)}).eq('id',currentUser.id);
   } else {
     const p = JSON.parse(localStorage.getItem('careerai_demo_profile')||'{}');
@@ -1409,7 +1409,7 @@ async function saveProfile() {
     exp:     document.getElementById('p-exp').value,
     skills:  document.getElementById('p-skills').value,
   };
-  if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+  if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
     await supabase.from('profiles').update(userProfile).eq('id',currentUser.id);
   } else {
     localStorage.setItem('careerai_demo_profile',JSON.stringify({...userProfile,applications:JSON.stringify(jobs)}));
@@ -1457,7 +1457,7 @@ function updateDashboard() {
 // ═══════════════════════════════════════════
 let allUsers = [];
 async function loadAdminData() {
-  if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+  if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
     const {data} = await supabase.from('profiles').select('*').order('created_at',{ascending:false});
     allUsers = data || [];
   } else {
@@ -1527,7 +1527,7 @@ function showToast(msg,type='info') {
 // AUTO LOGIN CHECK
 // ═══════════════════════════════════════════
 (async () => {
-  if (supabase && SUPABASE_URL !== 'https://zhtqfrbyqqmdnbpfmrdf.supabase.co') {
+  if (supabase && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
     const {data:{session}} = await supabase.auth.getSession();
     if (session) {
       currentUser = session.user;
