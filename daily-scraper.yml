@@ -1,0 +1,119 @@
+name: Daily Jobs Scraper
+
+on:
+  # Runs every day at 2:30 AM UTC = 8:00 AM IST
+  schedule:
+    - cron: '30 2 * * *'
+
+  # Also runs every 6 hours to catch urgent postings
+  # - cron: '30 2,8,14,20 * * *'
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      force_notify:
+        description: 'Force send notification even if no new jobs'
+        required: false
+        default: 'false'
+
+jobs:
+  scrape-and-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scraper/requirements.txt
+
+      - name: Run scraper
+        id: scraper
+        run: |
+          python scraper/scrape.py
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Check for new jobs
+        id: check_new
+        run: |
+          if [ -f data/jobs.json ]; then
+            NEW_COUNT=$(python -c "import json; d=json.load(open('data/jobs.json')); print(d.get('newCount', 0))")
+            echo "new_count=$NEW_COUNT" >> $GITHUB_OUTPUT
+            echo "Found $NEW_COUNT new jobs"
+          else
+            echo "new_count=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push updated data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GujJobs Bot"
+          git add data/jobs.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🤖 Auto-update: $(date +'%d %b %Y %H:%M IST') | New: ${{ steps.check_new.outputs.new_count }} jobs"
+            git push
+          fi
+
+      - name: Send Email Notification (if new jobs found)
+        if: steps.check_new.outputs.new_count != '0' || github.event.inputs.force_notify == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.GMAIL_USER }}
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: GujJobsTracker <${{ secrets.GMAIL_USER }}>
+          subject: "🔔 ${{ steps.check_new.outputs.new_count }} New Gujarat Govt Jobs Found! — ${{ github.run_number }}"
+          html_body: |
+            <!DOCTYPE html>
+            <html>
+            <body style="font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px;">
+              <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
+                <div style="background: #0D1B2A; padding: 24px; text-align: center;">
+                  <h1 style="color: white; margin: 0; font-size: 22px;">🏛️ GujJobsTracker Alert</h1>
+                  <p style="color: #94A3B8; margin: 6px 0 0;">Yogeshkumar Vasava · ST Candidate</p>
+                </div>
+                <div style="padding: 24px;">
+                  <div style="background: #EAF3DE; border-radius: 8px; padding: 16px; margin-bottom: 16px; text-align: center;">
+                    <div style="font-size: 32px; font-weight: bold; color: #1D7A5F;">${{ steps.check_new.outputs.new_count }}</div>
+                    <div style="color: #27500A; font-weight: 500;">New Job Postings Found!</div>
+                  </div>
+                  <p style="color: #444; line-height: 1.6;">New Gujarat government job notifications have been detected that match your profile (Mechanical Engineering · ST Category · Salary ₹30,000+).</p>
+                  <div style="text-align: center; margin: 24px 0;">
+                    <a href="https://vasavayogu44-ux.github.io/govjob/" 
+                       style="background: #F97316; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px;">
+                      View All Jobs →
+                    </a>
+                  </div>
+                  <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                  <p style="color: #888; font-size: 12px; text-align: center;">
+                    Updated daily at 8:00 AM IST · GujJobsTracker · 
+                    <a href="https://vasavayogu44-ux.github.io/govjob/" style="color: #F97316;">Open Dashboard</a>
+                  </p>
+                </div>
+              </div>
+            </body>
+            </html>
+
+      - name: Summary
+        run: |
+          echo "## 🤖 Scraper Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date:** $(date +'%d %b %Y %H:%M IST')" >> $GITHUB_STEP_SUMMARY
+          echo "- **New Jobs:** ${{ steps.check_new.outputs.new_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dashboard:** https://vasavayogu44-ux.github.io/govjob/" >> $GITHUB_STEP_SUMMARY
