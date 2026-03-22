@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gujarat Govt Jobs Tracker — Yogesh 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:     #0D1B2A;
+  --navy2:    #1B2E45;
+  --accent:   #F97316;
+  --accent2:  #FACC15;
+  --green:    #22C55E;
+  --red:      #EF4444;
+  --amber:    #F59E0B;
+  --purple:   #A855F7;
+  --teal:     #14B8A6;
+  --bg:       #0A1628;
+  --bg2:      #111E30;
+  --bg3:      #162438;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text1:    #F1F5F9;
+  --text2:    #94A3B8;
+  --text3:    #64748B;
+  --font-head:'Syne', sans-serif;
+  --font-body:'DM Sans', sans-serif;
+  --radius:   12px;
+  --radius-lg:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text1);min-height:100vh;overflow-x:hidden}
+
+/* ── NOISE TEXTURE ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
+
+/* ── HEADER ── */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(10,22,40,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem}
+.header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:1.5rem;height:60px}
+.logo{font-family:var(--font-head);font-weight:800;font-size:1.1rem;letter-spacing:-.02em;color:var(--text1);display:flex;align-items:center;gap:8px;white-space:nowrap}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.header-badge{font-size:10px;font-weight:600;letter-spacing:.06em;padding:3px 8px;border-radius:6px;background:rgba(249,115,22,.15);color:var(--accent);border:1px solid rgba(249,115,22,.3)}
+.header-spacer{flex:1}
+.last-updated{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:6px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 1.5s ease-in-out infinite}
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text2);font-family:var(--font-body);font-size:11px;cursor:pointer;transition:.2s}
+.refresh-btn:hover{background:rgba(255,255,255,.1);color:var(--text1)}
+.refresh-btn svg{transition:.4s}
+.refresh-btn.spinning svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── HERO BANNER ── */
+.hero{max-width:1400px;margin:0 auto;padding:2rem 2rem 1rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.hero-profile{display:flex;align-items:center;gap:14px}
+.avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;position:relative}
+.avatar::after{content:'ST';position:absolute;bottom:-4px;right:-4px;font-family:var(--font-head);font-size:8px;font-weight:700;background:var(--green);color:#fff;border-radius:4px;padding:1px 4px}
+.hero-name{font-family:var(--font-head);font-weight:700;font-size:1.4rem;letter-spacing:-.02em}
+.hero-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.hero-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:10px;padding:2px 8px;border-radius:6px;border:1px solid var(--border2);color:var(--text2)}
+.stats-grid{display:flex;gap:12px;flex-wrap:wrap;flex:1;justify-content:flex-end}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;min-width:100px;text-align:center}
+.stat-num{font-family:var(--font-head);font-size:1.6rem;font-weight:700;line-height:1}
+.stat-label{font-size:10px;color:var(--text3);margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+.stat-card.green .stat-num{color:var(--green)}
+.stat-card.red .stat-num{color:var(--red)}
+.stat-card.amber .stat-num{color:var(--amber)}
+.stat-card.accent .stat-num{color:var(--accent)}
+
+/* ── ALERT BAR ── */
+.alert-bar{max-width:1400px;margin:0 auto 1rem;padding:0 2rem}
+.alert{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:var(--radius);font-size:12px;border:1px solid}
+.alert.urgent{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#FCA5A5}
+.alert strong{font-weight:600}
+.alert a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.alert-icon{font-size:16px;flex-shrink:0}
+
+/* ── CONTROLS ── */
+.controls{max-width:1400px;margin:0 auto;padding:0 2rem 1rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:220px;max-width:400px}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.search-input{width:100%;padding:9px 12px 9px 36px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text1);font-family:var(--font-body);font-size:13px;outline:none;transition:.2s}
+.search-input:focus{border-color:rgba(249,115,22,.5);box-shadow:0 0 0 3px rgba(249,115,22,.08)}
+.search-input::placeholder{color:var(--text3)}
+
+.filter-group{display:flex;gap:6px;flex-wrap:wrap}
+.filt{padding:7px 12px;border-radius:8px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-family:var(--font-body);font-size:11px;font-weight:500;cursor:pointer;transition:.2s;white-space:nowrap}
+.filt:hover{border-color:var(--border2);background:var(--bg3);color:var(--text1)}
+.filt.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.sort-select{padding:8px 12px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);color:var(--text2);font-family:var(--font-body);font-size:12px;outline:none;cursor:pointer}
+.sort-select:focus{border-color:rgba(249,115,22,.4)}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:1400px;margin:0 auto;padding:0 2rem 4rem;display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start}
+@media(max-width:1050px){.main{grid-template-columns:1fr}}
+
+/* ── JOB CARDS ── */
+.jobs-col{}
+.jobs-count{font-size:11px;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.jobs-count span{color:var(--text1);font-weight:600}
+.job-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden;transition:.25s;cursor:pointer;animation:fadeUp .3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.job-card:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.job-card.urgent{border-color:rgba(239,68,68,.35)}
+.job-card.open{border-color:rgba(34,197,94,.2)}
+.job-card.closed{opacity:.55}
+
+.card-top{padding:14px 16px 10px;display:flex;gap:12px;align-items:flex-start}
+.card-left{flex:1;min-width:0}
+.card-title-row{display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.card-title{font-family:var(--font-head);font-weight:700;font-size:14px;letter-spacing:-.01em;line-height:1.3}
+.card-org{font-size:11px;color:var(--text2);margin-bottom:6px}
+.card-badges{display:flex;gap=5px;flex-wrap:wrap;gap:5px}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;letter-spacing:.04em;padding:2px 7px;border-radius:6px}
+.b-field-tech{background:rgba(168,85,247,.12);color:#D8B4FE;border:1px solid rgba(168,85,247,.2)}
+.b-field-eng{background:rgba(20,184,166,.1);color:#5EEAD4;border:1px solid rgba(20,184,166,.2)}
+.b-field-pub{background:rgba(249,115,22,.1);color:#FDBA74;border:1px solid rgba(249,115,22,.2)}
+.b-field-mun{background:rgba(34,197,94,.1);color:#86EFAC;border:1px solid rgba(34,197,94,.2)}
+.b-field-inst{background:rgba(250,204,21,.1);color:#FDE047;border:1px solid rgba(250,204,21,.2)}
+.b-st{background:rgba(34,197,94,.12);color:#86EFAC;border:1px solid rgba(34,197,94,.25)}
+.b-free{background:rgba(34,197,94,.08);color:#6EE7B7;border:1px solid rgba(34,197,94,.15)}
+.b-central{background:rgba(168,85,247,.08);color:#C4B5FD;border:1px solid rgba(168,85,247,.15)}
+.b-state{background:rgba(20,184,166,.08);color:#99F6E4;border:1px solid rgba(20,184,166,.15)}
+
+.status-pill{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.05em;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.sp-tonight{background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.3)}
+.sp-open{background:rgba(34,197,94,.12);color:#86EFAC;border:1px solid rgba(34,197,94,.25)}
+.sp-upcoming{background:rgba(168,85,247,.12);color:#D8B4FE;border:1px solid rgba(168,85,247,.2)}
+.sp-watch{background:rgba(100,116,139,.15);color:#94A3B8;border:1px solid rgba(100,116,139,.2)}
+.sp-closed{background:rgba(100,116,139,.1);color:#64748B;border:1px solid rgba(100,116,139,.15)}
+.sp-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+.card-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border)}
+.meta-item{background:var(--bg2);padding:8px 12px}
+.job-card:hover .meta-item{background:var(--bg3)}
+.meta-label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.meta-val{font-size:11px;font-weight:500;color:var(--text1)}
+.meta-val.red{color:#FCA5A5}
+.meta-val.green{color:#86EFAC}
+.meta-val.amber{color:#FCD34D}
+
+.card-expand{display:none;padding:12px 16px;border-top:1px solid var(--border);animation:fadeUp .2s ease}
+.job-card.expanded .card-expand{display:block}
+
+.expand-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.expand-section{background:var(--bg);border-radius:10px;padding:12px}
+.expand-section h4{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.expand-section ul{list-style:none;padding:0}
+.expand-section ul li{font-size:11px;color:var(--text2);padding:2px 0;display:flex;gap:6px;align-items:flex-start}
+.expand-section ul li::before{content:'›';color:var(--accent);flex-shrink:0}
+
+.syllabus-tags{display:flex;flex-wrap:wrap;gap:4px}
+.s-tag{font-size:9px;padding:2px 7px;border-radius:5px;background:rgba(249,115,22,.08);color:#FDBA74;border:1px solid rgba(249,115,22,.15)}
+
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;background:var(--accent);color:#fff;font-family:var(--font-body);font-size:11px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:.2s}
+.btn-primary:hover{background:#EA6800;transform:translateY(-1px)}
+.btn-secondary{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;background:rgba(255,255,255,.06);color:var(--text2);font-family:var(--font-body);font-size:11px;font-weight:500;text-decoration:none;border:1px solid var(--border2);cursor:pointer;transition:.2s}
+.btn-secondary:hover{background:rgba(255,255,255,.1);color:var(--text1)}
+.btn-disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.fit-bar{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.fit-label{font-size:10px;color:var(--text3);min-width:60px}
+.fit-track{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.fit-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.5s ease}
+
+/* ── SIDEBAR ── */
+.sidebar{}
+.side-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:12px;overflow:hidden}
+.side-card-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.side-card-head h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.02em}
+.side-card-body{padding:12px 16px}
+
+.doc-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.doc-item:last-child{border-bottom:none}
+.doc-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.doc-icon.red{background:rgba(239,68,68,.12)}
+.doc-icon.blue{background:rgba(59,130,246,.12)}
+.doc-icon.green{background:rgba(34,197,94,.12)}
+.doc-icon.amber{background:rgba(245,158,11,.12)}
+.doc-name{font-size:11px;font-weight:500;flex:1}
+.doc-note{font-size:9px;color:var(--text3);margin-top:1px}
+.doc-status{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.doc-status.ready{background:var(--green)}
+.doc-status.need{background:var(--amber)}
+.doc-status.urgent{background:var(--red)}
+
+.timeline-item{display:flex;gap:10px;padding:6px 0;font-size:11px;border-bottom:1px solid var(--border)}
+.timeline-item:last-child{border-bottom:none}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tl-date{min-width:70px;color:var(--text3);font-size:10px}
+.tl-text{color:var(--text2);flex:1}
+.tl-pri{font-weight:600}
+
+.portal-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
+.portal-item:last-child{border-bottom:none}
+.portal-name{color:var(--text1);font-weight:500}
+.portal-link{font-size:10px;color:var(--accent);text-decoration:none;padding:2px 8px;border-radius:5px;border:1px solid rgba(249,115,22,.3);transition:.15s}
+.portal-link:hover{background:rgba(249,115,22,.1)}
+
+.exam-row{padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
+.exam-row:last-child{border-bottom:none}
+.exam-name{font-weight:500;color:var(--text1);margin-bottom:2px}
+.exam-detail{color:var(--text3);font-size:10px}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text3)}
+.empty-state svg{margin:0 auto 12px;display:block;opacity:.3}
+
+/* ── SECTION DIVIDER ── */
+.section-divider{padding:6px 0 4px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .header-inner{padding:0;gap:.8rem}
+  .hero,.controls,.main,.alert-bar{padding-left:1rem;padding-right:1rem}
+  .stats-grid{justify-content:flex-start}
+  .expand-grid{grid-template-columns:1fr}
+  .card-meta{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      GujJobsTracker
+    </div>
+    <span class="header-badge">ST · MECH · 2026</span>
+    <div class="header-spacer"></div>
+    <div class="last-updated">
+      <div class="live-dot"></div>
+      <span id="last-update-time">Updated just now</span>
+    </div>
+    <button class="refresh-btn" id="refresh-btn" onclick="refreshJobs()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      Refresh
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-profile">
+    <div class="avatar">👷</div>
+    <div>
+      <div class="hero-name">Yogeshkumar Vasava</div>
+      <div class="hero-sub">B.E. Mechanical · iACE PGP (Pursuing) · Umarpada, Surat</div>
+      <div class="hero-chips">
+        <span class="chip">FANUC Robotics</span>
+        <span class="chip">CNC Milling</span>
+        <span class="chip">SolidWorks</span>
+        <span class="chip">Lean Mfg</span>
+        <span class="chip">World Skills Rank 1</span>
+        <span class="chip">CGPA 7.44</span>
+      </div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card red">
+      <div class="stat-num" id="stat-urgent">2</div>
+      <div class="stat-label">Apply Tonight</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num" id="stat-open">3</div>
+      <div class="stat-label">Open Now</div>
+    </div>
+    <div class="stat-card amber">
+      <div class="stat-num" id="stat-exam">3</div>
+      <div class="stat-label">Exam Soon</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-num" id="stat-total">12</div>
+      <div class="stat-label">Total Tracked</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALERT -->
+<div class="alert-bar">
+  <div class="alert urgent">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>DEADLINE TONIGHT — 23 Mar 2026 11:59 PM:</strong> NFSU Gandhinagar — 82 Scientific/Technical posts + 51 Non-Academic posts. ST fee FREE. Apply now → <a href="https://nfsu.ac.in/career" target="_blank">nfsu.ac.in/career</a></div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input class="search-input" id="search-input" type="text" placeholder="Search posts, orgs, skills..." oninput="applyFilters()"/>
+  </div>
+  <div class="filter-group" id="filter-group">
+    <button class="filt active" data-filter="all" onclick="setFilter('all',this)">All</button>
+    <button class="filt" data-filter="open" onclick="setFilter('open',this)">Open Now</button>
+    <button class="filt" data-filter="tech" onclick="setFilter('tech',this)">Technical</button>
+    <button class="filt" data-filter="eng" onclick="setFilter('eng',this)">Engineering</button>
+    <button class="filt" data-filter="pub" onclick="setFilter('pub',this)">Public Service</button>
+    <button class="filt" data-filter="mun" onclick="setFilter('mun',this)">Municipal</button>
+    <button class="filt" data-filter="inst" onclick="setFilter('inst',this)">Instructor</button>
+    <button class="filt" data-filter="st" onclick="setFilter('st',this)">ST Reserved</button>
+  </div>
+  <select class="sort-select" id="sort-select" onchange="applyFilters()">
+    <option value="deadline">Sort: Deadline (Soonest)</option>
+    <option value="salary">Sort: Salary (Highest)</option>
+    <option value="vacancies">Sort: Vacancies</option>
+    <option value="fit">Sort: Best Fit</option>
+  </select>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="jobs-col">
+    <div class="jobs-count">Showing <span id="showing-count">12</span> of <span id="total-count">12</span> posts &nbsp;·&nbsp; All salaries ₹30,000+ only</div>
+    <div id="jobs-list"></div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Documents Checklist -->
+    <div class="side-card">
+      <div class="side-card-head">
+        <span>📋</span>
+        <h3>Documents Checklist</h3>
+      </div>
+      <div class="side-card-body">
+        <div class="doc-item">
+          <div class="doc-icon red">📄</div>
+          <div><div class="doc-name">ST Caste Certificate</div><div class="doc-note">Gujarat Govt · Mamlatdar issued</div></div>
+          <div class="doc-status ready"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon blue">🏠</div>
+          <div><div class="doc-name">Domicile Certificate</div><div class="doc-note">Surat / Gujarat domicile proof</div></div>
+          <div class="doc-status ready"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon green">🎓</div>
+          <div><div class="doc-name">GTU Degree + All Marksheets</div><div class="doc-note">CGPA 7.44 — all semesters</div></div>
+          <div class="doc-status ready"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon amber">📜</div>
+          <div><div class="doc-name">iACE Enrollment Letter</div><div class="doc-note">PGP pursuing 2025–26</div></div>
+          <div class="doc-status need"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon green">🏆</div>
+          <div><div class="doc-name">World Skills Certificate</div><div class="doc-note">District Rank 1 — Robot System Integration</div></div>
+          <div class="doc-status ready"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon blue">📁</div>
+          <div><div class="doc-name">3 Internship Certificates</div><div class="doc-note">Ammann / ReiseMitas / CIPET</div></div>
+          <div class="doc-status ready"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon amber">💳</div>
+          <div><div class="doc-name">Aadhaar Card</div><div class="doc-note">Linked to active mobile number</div></div>
+          <div class="doc-status ready"></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-icon red">🖼️</div>
+          <div><div class="doc-name">Passport Photo + Signature</div><div class="doc-note">Scanned JPG — white background</div></div>
+          <div class="doc-status urgent"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;font-size:10px;color:var(--text3)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></span>Ready</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:var(--amber);display:inline-block"></span>Collect</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block"></span>Urgent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Calendar -->
+    <div class="side-card">
+      <div class="side-card-head">
+        <span>🗓️</span>
+        <h3>Action Calendar</h3>
+      </div>
+      <div class="side-card-body">
+        <div class="timeline-item">
+          <div class="tl-dot" style="background:var(--red)"></div>
+          <div class="tl-date">Tonight</div>
+          <div class="tl-text"><span class="tl-pri" style="color:#FCA5A5">Apply NFSU</span> — both Technical + Non-Academic posts</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot" style="background:var(--amber)"></div>
+          <div class="tl-date">01 Apr</div>
+          <div class="tl-text">SMC Surat opens — Apply AE Mechanical + Technical Officer</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot" style="background:var(--amber)"></div>
+          <div class="tl-date">15 Apr</div>
+          <div class="tl-text">SMC Surat last date</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot" style="background:var(--purple)"></div>
+          <div class="tl-date">26 Apr</div>
+          <div class="tl-text">GPSC AE Mech Prelim Exam — Prepare SOM, TOM, FM, Mfg</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot" style="background:var(--teal)"></div>
+          <div class="tl-date">Jun 2026</div>
+          <div class="tl-text">Complete iACE PGP · Watch ISRO SAC next cycle</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot" style="background:var(--green)"></div>
+          <div class="tl-date">Mid-2026</div>
+          <div class="tl-text">GPSC Class-1 cycle · ISRO next round · GSSSB JE Mech</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Official Portals -->
+    <div class="side-card">
+      <div class="side-card-head">
+        <span>🔗</span>
+        <h3>Official Portals</h3>
+      </div>
+      <div class="side-card-body">
+        <div class="portal-item"><span class="portal-name">OJAS Gujarat</span><a class="portal-link" href="https://ojas.gujarat.gov.in" target="_blank">Visit →</a></div>
+        <div class="portal-item"><span class="portal-name">GPSC</span><a class="portal-link" href="https://gpsc.gujarat.gov.in" target="_blank">Visit →</a></div>
+        <div class="portal-item"><span class="portal-name">GSSSB</span><a class="portal-link" href="https://gsssb.gujarat.gov.in" target="_blank">Visit →</a></div>
+        <div class="portal-item"><span class="portal-name">NFSU Career</span><a class="portal-link" href="https://nfsu.ac.in/career" target="_blank">Visit →</a></div>
+        <div class="portal-item"><span class="portal-name">ISRO SAC</span><a class="portal-link" href="https://sac.gov.in" target="_blank">Visit →</a></div>
+        <div class="portal-item"><span class="portal-name">SMC Surat</span><a class="portal-link" href="https://suratmunicipal.gov.in/information/recruitment" target="_blank">Visit →</a></div>
+        <div class="portal-item"><span class="portal-name">MaruGujarat</span><a class="portal-link" href="https://www.marugujarat.in" target="_blank">Visit →</a></div>
+      </div>
+    </div>
+
+    <!-- Exam Prep -->
+    <div class="side-card">
+      <div class="side-card-head">
+        <span>📚</span>
+        <h3>Exam Prep Priority</h3>
+      </div>
+      <div class="side-card-body">
+        <div class="exam-row">
+          <div class="exam-name">GPSC AE Mech — Apr 26, 2026</div>
+          <div class="exam-detail">SOM · TOM · Fluid Mechanics · Manufacturing · Thermodynamics · GD&T · CAD/CAM · Lean Mfg</div>
+        </div>
+        <div class="exam-row">
+          <div class="exam-name">NFSU Technical Officer</div>
+          <div class="exam-detail">Robotics · Automation · CNC · Mechanical Engineering basics · Aptitude</div>
+        </div>
+        <div class="exam-row">
+          <div class="exam-name">GSSSB ITI Instructor</div>
+          <div class="exam-detail">Trade theory · Practical demonstration · Teaching methodology · CNC programming</div>
+        </div>
+        <div class="exam-row">
+          <div class="exam-name">ISRO Scientist SC (Next cycle)</div>
+          <div class="exam-detail">Written test: Mech Engg · Aptitude · Technical + ICRB interview</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const JOBS = [
+  {
+    id:1, title:"Scientific / Technical Officer", org:"NFSU Gandhinagar (MHA — Central Govt)",
+    field:"tech", fieldLabel:"Technical", govtType:"Central",
+    notified:"23 Feb 2026", applyFrom:"23 Feb 2026", lastDate:"23 Mar 2026",
+    lastDateTs:new Date("2026-03-23").getTime(),
+    salary:"₹44,900 – ₹1,42,400", salaryNum:44900,
+    payLevel:"Level 7–10", vacancies:"82", stVac:"~6", stFee:"FREE",
+    statusClass:"sp-tonight", statusLabel:"TONIGHT", cardClass:"urgent",
+    fit:95, fitLabel:"Best Match",
+    isOpen:true, isUrgent:true, isST:true,
+    applyLink:"https://nfsu.ac.in/career", notifLink:"https://nfsu.ac.in/career",
+    examStages:[
+      {stage:"Stage 1", name:"Written Test (CBT)", mode:"Online MCQ", marks:"100", duration:"90 min", neg:"1/4"},
+      {stage:"Stage 2", name:"Interview / Skill Test", mode:"Offline", marks:"—", duration:"—", neg:"—"}
+    ],
+    syllabus:["Mechanical Engineering Core","Robotics & Automation","CNC Programming basics","Material Science","Aptitude & Reasoning","English & GK"],
+    docsNeeded:["ST Caste Certificate","GTU Degree","All Marksheets","Internship Certs","Photo + Signature","Aadhaar"],
+    note:"Central Govt permanent job. Robotics + CNC background is rare for this pool. ST quota 7.5% + free fee."
+  },
+  {
+    id:2, title:"Section Officer / Dy. Section Officer / Assistant", org:"NFSU Gandhinagar (MHA — Central Govt)",
+    field:"pub", fieldLabel:"Public Service", govtType:"Central",
+    notified:"23 Feb 2026", applyFrom:"23 Feb 2026", lastDate:"23 Mar 2026",
+    lastDateTs:new Date("2026-03-23").getTime(),
+    salary:"₹35,400 – ₹1,42,400", salaryNum:35400,
+    payLevel:"Level 6–10", vacancies:"51", stVac:"~4", stFee:"FREE",
+    statusClass:"sp-tonight", statusLabel:"TONIGHT", cardClass:"urgent",
+    fit:72, fitLabel:"Good Match",
+    isOpen:true, isUrgent:true, isST:true,
+    applyLink:"https://nfsu.ac.in/career", notifLink:"https://nfsu.ac.in/career",
+    examStages:[
+      {stage:"Stage 1", name:"Written Test", mode:"Online MCQ", marks:"100", duration:"90 min", neg:"1/4"},
+      {stage:"Stage 2", name:"Skill Test (Typing)", mode:"Offline", marks:"Pass/Fail", duration:"—", neg:"—"}
+    ],
+    syllabus:["General English","Reasoning & Aptitude","General Knowledge (India & Gujarat)","Computer Fundamentals","Office Administration"],
+    docsNeeded:["ST Caste Certificate","Any Degree Certificate","Aadhaar","Photo + Signature","Domicile Certificate"],
+    note:"Any graduate eligible. Non-technical administrative post. Good backup alongside Technical Officer application."
+  },
+  {
+    id:3, title:"Asst. Engineer — Mechanical (AE Mech)", org:"SMC — Surat Municipal Corporation",
+    field:"mun", fieldLabel:"Municipal", govtType:"State (Municipal)",
+    notified:"11 Mar 2026", applyFrom:"01 Apr 2026", lastDate:"15 Apr 2026",
+    lastDateTs:new Date("2026-04-15").getTime(),
+    salary:"₹44,900 – ₹1,42,400", salaryNum:44900,
+    payLevel:"Level 8", vacancies:"~25", stVac:"~4", stFee:"₹250",
+    statusClass:"sp-open", statusLabel:"OPENS APR 1", cardClass:"open",
+    fit:97, fitLabel:"Best Match — Home City",
+    isOpen:true, isUrgent:false, isST:true,
+    applyLink:"https://suratmunicipal.gov.in/information/recruitment", notifLink:"https://suratmunicipal.gov.in/information/recruitment",
+    examStages:[
+      {stage:"Stage 1", name:"Written Exam (Objective)", mode:"OMR/CBT", marks:"150", duration:"2 hrs", neg:"0.25"},
+      {stage:"Stage 2", name:"Document Verification", mode:"Offline", marks:"—", duration:"—", neg:"—"}
+    ],
+    syllabus:["Strength of Materials (SOM)","Theory of Machines (TOM)","Fluid Mechanics & Machinery","Manufacturing Processes","Engineering Drawing / CAD","Thermodynamics","Material Science","GK / Current Affairs (Gujarat)"],
+    docsNeeded:["ST Caste Certificate","GTU B.E. Degree","Marksheets (all sem)","Domicile Certificate","Internship Certs","iACE Enrollment","Aadhaar","Photo + Signature"],
+    note:"Surat-based — near Umarpada. 2295 total vacancies in this notification. Mech AE is your strongest match. Low commute, home-city posting advantage."
+  },
+  {
+    id:4, title:"Technical Officer / Town Planner (Group A)", org:"SMC — Surat Municipal Corporation",
+    field:"mun", fieldLabel:"Municipal", govtType:"State (Municipal)",
+    notified:"11 Mar 2026", applyFrom:"01 Apr 2026", lastDate:"15 Apr 2026",
+    lastDateTs:new Date("2026-04-15").getTime(),
+    salary:"₹44,900 – ₹1,42,400", salaryNum:44900,
+    payLevel:"Level 8", vacancies:"Multiple", stVac:"15%", stFee:"₹250",
+    statusClass:"sp-open", statusLabel:"OPENS APR 1", cardClass:"open",
+    fit:75, fitLabel:"Good Match",
+    isOpen:true, isUrgent:false, isST:true,
+    applyLink:"https://suratmunicipal.gov.in/information/recruitment", notifLink:"https://suratmunicipal.gov.in/information/recruitment",
+    examStages:[
+      {stage:"Stage 1", name:"Written Exam", mode:"OMR/CBT", marks:"150", duration:"2 hrs", neg:"0.25"},
+      {stage:"Stage 2", name:"Document Verification", mode:"Offline", marks:"—", duration:"—", neg:"—"}
+    ],
+    syllabus:["Urban Planning basics","Engineering Drawing","GIS fundamentals","Mech / Civil Engineering","Current Affairs Gujarat"],
+    docsNeeded:["ST Caste Certificate","GTU B.E. Degree","Marksheets","Domicile","Aadhaar","Photo"],
+    note:"Part of the same SMC mega recruitment. Apply when portal opens Apr 1 alongside AE Mech application."
+  },
+  {
+    id:5, title:"Asst. Engineer — Mechanical (Class 2 Gazetted)", org:"GPSC — GWSSB / GMB / New Municipal Corps",
+    field:"eng", fieldLabel:"Engineering", govtType:"State (GPSC)",
+    notified:"31 Jan 2026", applyFrom:"31 Jan 2026", lastDate:"16 Feb 2026 (Closed)",
+    lastDateTs:new Date("2026-02-16").getTime(),
+    salary:"₹44,900 – ₹1,42,400", salaryNum:44900,
+    payLevel:"Level 8 — Class 2 Gazetted", vacancies:"279", stVac:"~42 ST", stFee:"FREE",
+    statusClass:"sp-upcoming", statusLabel:"EXAM APR 26", cardClass:"",
+    fit:92, fitLabel:"Best Match",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://gpsc-ojas.gujarat.gov.in", notifLink:"https://gpsc-ojas.gujarat.gov.in",
+    examStages:[
+      {stage:"Prelim", name:"Preliminary Exam", mode:"OMR MCQ", marks:"200", duration:"2 hrs", neg:"0.33"},
+      {stage:"Mains", name:"Mains Written Exam", mode:"Offline Descriptive", marks:"300", duration:"3 hrs", neg:"None"},
+      {stage:"Final", name:"Viva-Voce / Interview", mode:"Offline", marks:"50", duration:"—", neg:"—"}
+    ],
+    syllabus:["SOM — Stress, Strain, Beams","TOM — Gears, Mechanisms","Fluid Mechanics & Hydraulics","Thermodynamics & IC Engines","Manufacturing / Production Engg","Machine Design","CAD/CAM / CNC basics","Engineering Maths","General Studies + Gujarat GK"],
+    docsNeeded:["ST Caste Certificate","GTU Degree","Marksheets all sem","Domicile","Aadhaar","Internship Certs","Photo + Signature"],
+    note:"Application closed. If you applied — Prelim is Apr 26, 2026. Prepare now. 42 reserved ST seats = low effective competition."
+  },
+  {
+    id:6, title:"Supervisor Instructor — CNC / Production / Mech", org:"GSSSB — Govt ITI Gujarat",
+    field:"inst", fieldLabel:"Instructor", govtType:"State (GSSSB)",
+    notified:"02 Mar 2026", applyFrom:"02 Mar 2026", lastDate:"16 Mar 2026 (Closed)",
+    lastDateTs:new Date("2026-03-16").getTime(),
+    salary:"₹40,800 (Fixed 5 yrs)", salaryNum:40800,
+    payLevel:"Fixed pay — then regular scale", vacancies:"203 total", stVac:"15%", stFee:"₹200",
+    statusClass:"sp-upcoming", statusLabel:"CBT UPCOMING", cardClass:"",
+    fit:88, fitLabel:"Best Match — World Skills Rank",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://ojas.gujarat.gov.in", notifLink:"https://gsssb.gujarat.gov.in",
+    examStages:[
+      {stage:"Stage 1", name:"Computer Based Test (CBT)", mode:"Online MCQ", marks:"100", duration:"90 min", neg:"0.25"},
+      {stage:"Stage 2", name:"Practical / Skill Demonstration", mode:"Offline", marks:"Pass/Fail", duration:"—", neg:"—"}
+    ],
+    syllabus:["CNC Programming (G-code, M-code)","FANUC / Fanuc Controller basics","Mechanical trade theory","Manufacturing processes","Workshop Safety (HSE)","Teaching methodology","Lean / 5S basics"],
+    docsNeeded:["ST Caste Certificate","GTU Degree","FANUC / Robotics certs if any","World Skills Certificate","Internship Certs","Aadhaar","Photo"],
+    note:"Your World Skills District Rank 1 in Robot System Integration is a direct credential for this role. ITI posting near Surat/tribal belt possible for ST candidates."
+  },
+  {
+    id:7, title:"Exec. Engineer / Dy. Exec. Engineer / AE (Class 1)", org:"GPSC — Gujarat Maritime Board (GMB)",
+    field:"eng", fieldLabel:"Engineering", govtType:"State (GPSC)",
+    notified:"18 Feb 2026", applyFrom:"18 Feb 2026", lastDate:"05 Mar 2026 (Closed)",
+    lastDateTs:new Date("2026-03-05").getTime(),
+    salary:"₹56,100 – ₹1,77,500", salaryNum:56100,
+    payLevel:"Level 10 — Class 1", vacancies:"7", stVac:"1-2", stFee:"FREE",
+    statusClass:"sp-closed", statusLabel:"CLOSED", cardClass:"closed",
+    fit:60, fitLabel:"Aspire Track",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://gpsc-ojas.gujarat.gov.in", notifLink:"https://gpsc-ojas.gujarat.gov.in",
+    examStages:[
+      {stage:"Prelim", name:"Preliminary Exam", mode:"MCQ", marks:"200", duration:"2 hrs", neg:"0.33"},
+      {stage:"Mains", name:"Descriptive Exam", mode:"Written", marks:"300", duration:"3 hrs", neg:"None"},
+      {stage:"Final", name:"Viva-Voce", mode:"Offline", marks:"50", duration:"—", neg:"—"}
+    ],
+    syllabus:["Advanced Mech Engineering","Structural / Marine Engineering","Management + Administration","Environmental Engineering","Gujarat Ports & Maritime Policy"],
+    docsNeeded:["ST Certificate","GTU Degree","Postgrad degree preferred","Domicile","Experience certs"],
+    note:"Closed. Watch next cycle. Underrated — maritime infrastructure, less competition vs PWD posts. Ideal after 2–3 years experience."
+  },
+  {
+    id:8, title:"Scientist / Engineer SC — Robotics / Mechatronics", org:"ISRO SAC, Ahmedabad (Central Govt)",
+    field:"tech", fieldLabel:"Technical", govtType:"Central",
+    notified:"Dec 2025 (prev cycle)", applyFrom:"Dec 2025", lastDate:"Feb 2026 (Closed)",
+    lastDateTs:new Date("2026-02-28").getTime(),
+    salary:"₹56,100 – ₹2,08,700", salaryNum:56100,
+    payLevel:"Level 10 — Scientist Grade", vacancies:"~49", stVac:"7.5%", stFee:"FREE",
+    statusClass:"sp-watch", statusLabel:"NEXT: MID-2026", cardClass:"",
+    fit:85, fitLabel:"Strong Match — FANUC + 3D Print",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://sac.gov.in", notifLink:"https://sac.gov.in",
+    examStages:[
+      {stage:"Stage 1", name:"Written Test (ICRB)", mode:"CBT MCQ", marks:"100", duration:"90 min", neg:"0.33"},
+      {stage:"Stage 2", name:"Technical Interview", mode:"Offline", marks:"—", duration:"—", neg:"—"}
+    ],
+    syllabus:["Advanced Robotics & Automation","Control Systems","FANUC / Industrial Robots","Mechatronics","Fluid Mechanics","Thermodynamics","Engineering Mathematics","Aptitude & Reasoning"],
+    docsNeeded:["ST Caste Certificate","GTU Degree (65%+ or relaxed for ST)","FANUC / Robotics training certs","Internship Certs","iACE PGP certificate (after Jun 2026)","Photo + Aadhaar"],
+    note:"Highest paying tech job in Ahmedabad. Your CGPA 7.44 + FANUC Robotics + RoboGuide + 3D Printing is a rare combination. Watch sac.gov.in for next cycle mid-2026. Apply immediately when notified."
+  },
+  {
+    id:9, title:"Craft Instructor — CNC / Robotics / Mechanical Trade", org:"Govt ITI — Directorate of Employment & Training, Gujarat",
+    field:"inst", fieldLabel:"Instructor", govtType:"State",
+    notified:"Periodic", applyFrom:"Watch OJAS", lastDate:"Watch OJAS",
+    lastDateTs:new Date("2026-12-31").getTime(),
+    salary:"₹40,000 – ₹60,000", salaryNum:40000,
+    payLevel:"Regular State Pay Scale", vacancies:"Periodic batches", stVac:"15% + tribal priority", stFee:"FREE",
+    statusClass:"sp-watch", statusLabel:"WATCH OJAS", cardClass:"",
+    fit:90, fitLabel:"Best Match — World Skills Rank 1",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://ojas.gujarat.gov.in", notifLink:"https://ojas.gujarat.gov.in",
+    examStages:[
+      {stage:"Stage 1", name:"Written Test", mode:"MCQ", marks:"100", duration:"90 min", neg:"0.25"},
+      {stage:"Stage 2", name:"Trade Practical Test", mode:"Offline", marks:"Pass/Fail", duration:"—", neg:"—"}
+    ],
+    syllabus:["CNC Trade Theory","FANUC Programming","Workshop Calculations","Engineering Drawing","Trade Pedagogy","Safety & HSE"],
+    docsNeeded:["ST Certificate","GTU Degree","World Skills Cert","Internship Certs","Aadhaar","Photo"],
+    note:"Priority posting near Surat / Umarpada / tribal belt for ST candidates. Permanent Govt job with pension. World Skills Rank is a major advantage for selection."
+  },
+  {
+    id:10, title:"GSSSB CCE Group A — Head Clerk / Sr. Clerk / SWI", org:"GSSSB — Advt. 378/2025-26",
+    field:"pub", fieldLabel:"Public Service", govtType:"State (GSSSB)",
+    notified:"04 Feb 2026", applyFrom:"04 Feb 2026", lastDate:"20 Feb 2026 (Closed)",
+    lastDateTs:new Date("2026-02-20").getTime(),
+    salary:"₹44,900 – ₹1,42,400", salaryNum:44900,
+    payLevel:"Level 7+", vacancies:"5370 total (~750 ST)", stVac:"~750 ST", stFee:"₹50",
+    statusClass:"sp-upcoming", statusLabel:"PRELIM SOON", cardClass:"",
+    fit:55, fitLabel:"Backup Option",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://gsssb.gujarat.gov.in", notifLink:"https://gsssb.gujarat.gov.in",
+    examStages:[
+      {stage:"Prelim", name:"Preliminary Exam", mode:"OMR MCQ", marks:"100", duration:"60 min", neg:"0.25"},
+      {stage:"Mains", name:"Main Exam", mode:"OMR MCQ", marks:"200", duration:"2 hrs", neg:"0.25"}
+    ],
+    syllabus:["General Knowledge (Gujarat + India)","English Grammar & Comprehension","Gujarati Language","Reasoning & Mental Ability","Arithmetic / Maths","Computer Literacy"],
+    docsNeeded:["ST Certificate","Any Degree Certificate","Aadhaar","Photo + Signature"],
+    note:"Backup administrative post. Non-technical. Huge vacancy count means good selection chance for ST candidates. Exam prelim likely March–April 2026."
+  },
+  {
+    id:11, title:"GPSC Class-1 Officer (Dy. Collector / DSO / Dev. Officer)", org:"GPSC — Next Annual Class-1 Cycle (Mid-2026)",
+    field:"pub", fieldLabel:"Public Service", govtType:"State (GPSC)",
+    notified:"Mid-2026", applyFrom:"Watch GPSC", lastDate:"TBA",
+    lastDateTs:new Date("2026-09-01").getTime(),
+    salary:"₹56,100 – ₹1,77,500", salaryNum:56100,
+    payLevel:"Level 10+ Class 1 Gazetted", vacancies:"Annual Cycle", stVac:"15%", stFee:"FREE",
+    statusClass:"sp-watch", statusLabel:"WATCH MID-2026", cardClass:"",
+    fit:50, fitLabel:"Long-Term Goal",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://gpsc.gujarat.gov.in", notifLink:"https://gpsc.gujarat.gov.in",
+    examStages:[
+      {stage:"Prelim", name:"Preliminary (OJAS)", mode:"MCQ", marks:"200", duration:"2 hrs", neg:"0.33"},
+      {stage:"Mains", name:"Mains (6 papers)", mode:"Descriptive", marks:"600", duration:"Multi-day", neg:"None"},
+      {stage:"Final", name:"Personality Test", mode:"Interview", marks:"75", duration:"—", neg:"—"}
+    ],
+    syllabus:["Gujarat History & Culture","Indian Polity & Constitution","Economy & Geography","Science & Technology","Current Affairs (National + Gujarat)","Optional Subject (Mech Engg recommended)"],
+    docsNeeded:["ST Certificate","GTU Degree","Domicile","Aadhaar","Photo","NOC if employed"],
+    note:"Prestigious Class-1 officer role. Long prep needed (6–12 months). ST age limit 40 years. Start preparation after completing iACE PGP in June 2026."
+  },
+  {
+    id:12, title:"GSSSB JE / IT / Systems Officer (Mechanical)", org:"GSSSB — Various Depts / GIDC / GSWAN",
+    field:"tech", fieldLabel:"Technical", govtType:"State (GSSSB)",
+    notified:"Periodic 2026", applyFrom:"Watch GSSSB", lastDate:"Watch GSSSB",
+    lastDateTs:new Date("2026-12-31").getTime(),
+    salary:"₹40,000 – ₹80,000", salaryNum:40000,
+    payLevel:"Varies by post", vacancies:"50–100+ per cycle", stVac:"15%", stFee:"FREE",
+    statusClass:"sp-watch", statusLabel:"WATCH GSSSB", cardClass:"",
+    fit:70, fitLabel:"Good Match — Automation",
+    isOpen:false, isUrgent:false, isST:true,
+    applyLink:"https://gsssb.gujarat.gov.in", notifLink:"https://gsssb.gujarat.gov.in",
+    examStages:[
+      {stage:"Stage 1", name:"Written Exam", mode:"CBT / OMR", marks:"100", duration:"90 min", neg:"0.25"},
+      {stage:"Stage 2", name:"Document Verification", mode:"Offline", marks:"—", duration:"—", neg:"—"}
+    ],
+    syllabus:["Mech / Automation Engineering","CNC & Manufacturing basics","Computer Fundamentals","Aptitude & Reasoning","General Knowledge"],
+    docsNeeded:["ST Certificate","GTU Degree","Marksheets","Aadhaar","Photo"],
+    note:"GIDC units and Govt workshops recruit Mech JE regularly. Less competition than GPSC. Good entry point while preparing for higher posts."
+  }
+];
+
+let currentFilter = "all";
+let currentSearch = "";
+let currentSort = "deadline";
+let expandedId = null;
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll(".filt").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderJobs();
+}
+
+function applyFilters() {
+  currentSearch = document.getElementById("search-input").value.toLowerCase();
+  currentSort = document.getElementById("sort-select").value;
+  renderJobs();
+}
+
+function getFiltered() {
+  return JOBS.filter(j => {
+    const matchFilter =
+      currentFilter === "all" ||
+      (currentFilter === "open" && j.isOpen) ||
+      (currentFilter === "st" && j.isST) ||
+      currentFilter === j.field;
+    const q = currentSearch;
+    const matchSearch = !q || j.title.toLowerCase().includes(q) ||
+      j.org.toLowerCase().includes(q) ||
+      j.syllabus.some(s => s.toLowerCase().includes(q)) ||
+      j.fieldLabel.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  }).sort((a, b) => {
+    if (currentSort === "deadline") return a.lastDateTs - b.lastDateTs;
+    if (currentSort === "salary") return b.salaryNum - a.salaryNum;
+    if (currentSort === "vacancies") {
+      const av = parseInt(a.vacancies) || 0;
+      const bv = parseInt(b.vacancies) || 0;
+      return bv - av;
+    }
+    if (currentSort === "fit") return b.fit - a.fit;
+    return 0;
+  });
+}
+
+function statusDotColor(cls) {
+  if (cls === "sp-tonight") return "#EF4444";
+  if (cls === "sp-open") return "#22C55E";
+  if (cls === "sp-upcoming") return "#A855F7";
+  if (cls === "sp-watch") return "#64748B";
+  if (cls === "sp-closed") return "#475569";
+  return "#64748B";
+}
+
+function renderJobs() {
+  const list = document.getElementById("jobs-list");
+  const filtered = getFiltered();
+  document.getElementById("showing-count").textContent = filtered.length;
+  document.getElementById("total-count").textContent = JOBS.length;
+
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><div>No jobs match your search</div></div>`;
+    return;
+  }
+
+  // Group by status for section dividers
+  let html = "";
+  let lastGroup = "";
+  const groupOf = j => {
+    if (j.isUrgent) return "🔴 Apply Tonight / This Week";
+    if (j.isOpen && !j.isUrgent) return "🟢 Open — Apply Now";
+    if (!j.isOpen && j.lastDate.includes("(Closed)") && j.statusClass !== "sp-closed") return "🟡 Closed — Exam Upcoming";
+    if (j.statusClass === "sp-watch") return "👁️ Watch — Next Cycle";
+    return "⚪ Closed";
+  };
+
+  filtered.forEach((j, i) => {
+    const grp = groupOf(j);
+    if (grp !== lastGroup) {
+      html += `<div class="section-divider" style="animation-delay:${i*0.04}s">${grp}</div>`;
+      lastGroup = grp;
+    }
+
+    const expanded = expandedId === j.id;
+    const stagesHtml = j.examStages.map(s => `
+      <tr>
+        <td style="padding:5px 8px;font-size:11px;color:var(--text2)">${s.stage}</td>
+        <td style="padding:5px 8px;font-size:11px;color:var(--text1);font-weight:500">${s.name}</td>
+        <td style="padding:5px 8px;font-size:11px;color:var(--text2)">${s.mode}</td>
+        <td style="padding:5px 8px;font-size:11px;color:var(--text2)">${s.marks}</td>
+        <td style="padding:5px 8px;font-size:11px;color:var(--text2)">${s.duration}</td>
+        <td style="padding:5px 8px;font-size:11px;color:var(--text2)">${s.neg}</td>
+      </tr>`).join("");
+
+    const syllabusHtml = j.syllabus.map(s => `<span class="s-tag">${s}</span>`).join("");
+    const docsHtml = j.docsNeeded.map(d => `<li>${d}</li>`).join("");
+
+    const canApply = j.isOpen;
+    const applyBtnClass = canApply ? "btn-primary" : "btn-primary btn-disabled";
+
+    html += `
+    <div class="job-card ${j.cardClass} ${expanded ? 'expanded' : ''}" id="card-${j.id}" style="animation-delay:${i*0.05}s">
+      <div class="card-top" onclick="toggleExpand(${j.id})">
+        <div class="card-left">
+          <div class="card-title-row">
+            <div class="card-title">${j.title}</div>
+            <span class="status-pill ${j.statusClass}"><span class="sp-dot" style="background:${statusDotColor(j.statusClass)}"></span>${j.statusLabel}</span>
+          </div>
+          <div class="card-org">${j.org}</div>
+          <div class="card-badges">
+            <span class="badge b-field-${j.field}">${j.fieldLabel}</span>
+            ${j.govtType === "Central" ? '<span class="badge b-central">Central Govt</span>' : '<span class="badge b-state">State Govt</span>'}
+            <span class="badge b-st">ST Reserved</span>
+            ${j.stFee === "FREE" ? '<span class="badge b-free">Fee FREE</span>' : `<span class="badge b-st">Fee ${j.stFee}</span>`}
+          </div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <div class="meta-item">
+          <div class="meta-label">Notified On</div>
+          <div class="meta-val">${j.notified}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Apply From</div>
+          <div class="meta-val">${j.applyFrom}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Last Date</div>
+          <div class="meta-val ${j.isUrgent ? 'red' : j.isOpen ? 'green' : ''}">${j.lastDate}</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Salary / Month</div>
+          <div class="meta-val amber">${j.salary}</div>
+        </div>
+      </div>
+      <div class="card-expand">
+        <div class="fit-bar">
+          <div class="fit-label">Profile Fit</div>
+          <div class="fit-track"><div class="fit-fill" style="width:${j.fit}%"></div></div>
+          <div style="font-size:11px;color:var(--text2);min-width:120px;text-align:right">${j.fit}% — ${j.fitLabel}</div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);margin:10px 0;padding:10px;background:var(--bg);border-radius:8px;border-left:2px solid var(--accent)">${j.note}</div>
+        <div class="expand-grid">
+          <div class="expand-section">
+            <h4>Exam Structure</h4>
+            <table style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr style="background:rgba(255,255,255,.04)">
+                  <th style="padding:4px 8px;font-size:9px;color:var(--text3);text-align:left;font-weight:500">Stage</th>
+                  <th style="padding:4px 8px;font-size:9px;color:var(--text3);text-align:left;font-weight:500">Name</th>
+                  <th style="padding:4px 8px;font-size:9px;color:var(--text3);text-align:left;font-weight:500">Mode</th>
+                  <th style="padding:4px 8px;font-size:9px;color:var(--text3);text-align:left;font-weight:500">Marks</th>
+                  <th style="padding:4px 8px;font-size:9px;color:var(--text3);text-align:left;font-weight:500">Duration</th>
+                  <th style="padding:4px 8px;font-size:9px;color:var(--text3);text-align:left;font-weight:500">Neg.</th>
+                </tr>
+              </thead>
+              <tbody>${stagesHtml}</tbody>
+            </table>
+          </div>
+          <div class="expand-section">
+            <h4>Syllabus / Key Topics</h4>
+            <div class="syllabus-tags">${syllabusHtml}</div>
+            <h4 style="margin-top:12px">Documents Needed</h4>
+            <ul>${docsHtml}</ul>
+          </div>
+        </div>
+        <div style="margin-bottom:4px">
+          <span style="font-size:10px;color:var(--text3)">Vacancies: <strong style="color:var(--text1)">${j.vacancies}</strong> total &nbsp;·&nbsp; ST Reserved: <strong style="color:#86EFAC">${j.stVac}</strong> &nbsp;·&nbsp; Pay Level: <strong style="color:#FCD34D">${j.payLevel}</strong></span>
+        </div>
+        <div class="card-actions">
+          <a class="${applyBtnClass}" href="${j.applyLink}" target="_blank">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            ${canApply ? "Apply Now" : "Portal (Not Open Yet)"}
+          </a>
+          <a class="btn-secondary" href="${j.notifLink}" target="_blank">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Notification
+          </a>
+          <button class="btn-secondary" onclick="copyOrgName(event,'${j.org}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Org Name
+          </button>
+        </div>
+      </div>
+    </div>`;
+  });
+  list.innerHTML = html;
+
+  // Update stats
+  const all = JOBS;
+  document.getElementById("stat-urgent").textContent = all.filter(j => j.isUrgent).length;
+  document.getElementById("stat-open").textContent = all.filter(j => j.isOpen && !j.isUrgent).length;
+  document.getElementById("stat-exam").textContent = all.filter(j => j.statusClass === "sp-upcoming").length;
+  document.getElementById("stat-total").textContent = all.length;
+}
+
+function toggleExpand(id) {
+  expandedId = expandedId === id ? null : id;
+  renderJobs();
+  if (expandedId) {
+    setTimeout(() => {
+      const el = document.getElementById("card-" + id);
+      if (el) el.scrollIntoView({behavior:"smooth", block:"nearest"});
+    }, 100);
+  }
+}
+
+function copyOrgName(e, name) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(name).catch(()=>{});
+  const btn = e.currentTarget;
+  btn.textContent = "Copied!";
+  setTimeout(() => { btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Org Name'; }, 1500);
+}
+
+function refreshJobs() {
+  const btn = document.getElementById("refresh-btn");
+  btn.classList.add("spinning");
+  setTimeout(() => {
+    btn.classList.remove("spinning");
+    const now = new Date();
+    document.getElementById("last-update-time").textContent =
+      "Updated " + now.toLocaleTimeString("en-IN", {hour:"2-digit", minute:"2-digit"});
+    renderJobs();
+  }, 1200);
+}
+
+// Init
+renderJobs();
+document.getElementById("last-update-time").textContent =
+  "Updated " + new Date().toLocaleTimeString("en-IN", {hour:"2-digit", minute:"2-digit"});
+</script>
+</body>
+</html>
